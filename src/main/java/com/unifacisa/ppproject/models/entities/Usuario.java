@@ -3,6 +3,7 @@ package com.unifacisa.ppproject.models.entities;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,10 +30,11 @@ public class Usuario implements Identificable,UserDetails {
 	private String nome;
 	
 	@Email
+	@Column(unique = true)
 	private String email;
 	@NotBlank
 	private String password;
-	private RoleEnum role;
+	private RoleEnum role = RoleEnum.CLIENTE;
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

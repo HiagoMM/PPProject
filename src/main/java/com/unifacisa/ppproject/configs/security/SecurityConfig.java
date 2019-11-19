@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.unifacisa.ppproject.configs.security.filters.AuthEntryPoint;
 import com.unifacisa.ppproject.configs.security.filters.JWTAuthenticationFilter;
 import com.unifacisa.ppproject.configs.security.filters.JWTLoginFilter;
 import com.unifacisa.ppproject.models.enums.RoleEnum;
@@ -24,21 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UsuarioService usuarioService;
 	
+	@Autowired
+	private AuthEntryPoint entryPoint;
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity.csrf().disable()
 			.authorizeRequests()
 			.antMatchers(SecurityConstants.SWAGGER).permitAll()
-			.antMatchers("/usuarios").permitAll()
+			.antMatchers(HttpMethod.POST, "/usuarios/admin").hasAuthority(RoleEnum.ADMIN.getAuthority())
+			.antMatchers(HttpMethod.POST, "/login").permitAll()
+			.antMatchers(HttpMethod.GET, "/pratos/**").hasAnyAuthority(RoleEnum.CLIENTE.getAuthority())
+			.antMatchers(HttpMethod.GET, "/bebidas/**").hasAnyAuthority(RoleEnum.CLIENTE.getAuthority())
+			.antMatchers("/usuarios/**").permitAll()
 			.antMatchers("/pedidos/**").hasAuthority(RoleEnum.CLIENTE.getAuthority())
 			.antMatchers("/bebidas/**").hasAuthority(RoleEnum.ADMIN.getAuthority())
 			.antMatchers("/pratos/**").hasAuthority(RoleEnum.ADMIN.getAuthority())
 			.antMatchers("/ingredientes/**").hasAuthority(RoleEnum.ADMIN.getAuthority())
-			.antMatchers(HttpMethod.POST, "/login").permitAll()
-			.antMatchers(HttpMethod.GET, "/pratos/**").hasAnyAuthority(RoleEnum.CLIENTE.getAuthority())
-			.antMatchers(HttpMethod.GET, "/bebidas/**").hasAnyAuthority(RoleEnum.CLIENTE.getAuthority())
 			.anyRequest().authenticated().and()
+			.exceptionHandling().authenticationEntryPoint(entryPoint).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.addFilterBefore(new JWTLoginFilter("/login", authenticationManager(),usuarioService),
 	                UsernamePasswordAuthenticationFilter.class)

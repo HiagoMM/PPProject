@@ -12,9 +12,9 @@ spring:
         hibernate:
           ddl-auto: update
         show-sql: false
-config:
-  security:
-    expirationTime: 860_000_000
-    secret: oaudbga8sydu9hijokpláskojiyut6u7i8ok
-    tokenPrefix: Bearer
-    headerString: Authorization
+#config:
+#  security:
+#    expirationTime: 860_000_000
+#    secret: oaudbga8sydu9hijokpláskojiyut6u7i8ok
+#    tokenPrefix: Bearer
+#    headerString: Authorization

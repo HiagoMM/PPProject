@@ -31,10 +31,16 @@ public class UsuarioService extends BasicService<Usuario, UsuarioRepository> imp
 		return getByEmail(username);
 	}
 
-	@Override
 	public Usuario post(Usuario element) {
 		element.setPassword(encoder.encode(element.getPassword()));
-		element.setRole(RoleEnum.CLIENTE);
 		return super.post(element);
+	}
+	public Usuario postCliente(Usuario element) {
+		element.setRole(RoleEnum.CLIENTE);
+		return post(element);
+	}
+	public Usuario postAdmin(Usuario element) {
+		element.setRole(RoleEnum.ADMIN);
+		return post(element);
 	}
 }
