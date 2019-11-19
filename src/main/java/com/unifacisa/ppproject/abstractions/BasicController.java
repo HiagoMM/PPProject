@@ -2,6 +2,8 @@ package com.unifacisa.ppproject.abstractions;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +30,11 @@ public abstract class BasicController<T,S extends ServiceInterface<T>>  {
 		return ResponseEntity.ok(service.getAll());
 	}
 	@PutMapping("{id}")
-	public ResponseEntity<T> putById(@PathVariable Long id,@RequestBody T element) {
+	public ResponseEntity<T> putById(@PathVariable Long id,@Valid @RequestBody T element) {
 		return ResponseEntity.ok(service.putById(id, element));
 	}
 	@PostMapping
-	public ResponseEntity<T> post(@RequestBody T element) {
+	public ResponseEntity<T> post(@Valid @RequestBody T element) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.post(element));
 	}
 	@DeleteMapping("{id}")
